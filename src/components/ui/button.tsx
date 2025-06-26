@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         // Core variants with enhanced animations
         default:
-          "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 after:absolute after:h-1 after:bg-primary-foreground/30 after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:transition-all after:duration-500 after:ease-in-out",
+          "bg-primary text-primary-foreground hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 active:translate-y-0 ",
         
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-lg hover:shadow-destructive/30 active:bg-destructive/80 before:absolute before:inset-0 before:border-2 before:border-destructive-foreground/0 hover:before:border-destructive-foreground/20 before:rounded-full before:scale-[1.08] hover:before:scale-100 before:transition-all before:duration-300",

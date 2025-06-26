@@ -53,7 +53,7 @@ const Hero = () => {
               </div>
             </div>
             
-            <div className='flex items-center justify-center'>
+            <div className='items-center justify-center hidden md:block'>
               <Swiper
                 effect={'fade'}
                 fadeEffect={{ crossFade: true }}
