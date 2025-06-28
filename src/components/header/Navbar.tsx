@@ -21,7 +21,7 @@ const Navbar = () => {
                 <Button 
                     variant="secondary" 
                     size="sm" 
-                    className='lg:hidden z-20 bg-primary text-white hover:bg-primary/90' 
+                    className='lg:hidden z-40 bg-primary text-white hover:bg-primary/90' 
                     onClick={() => setOpenMenu(!openMenu)}
                 >
                     <Menu className='!w-6 !h-6 '/>
@@ -30,7 +30,7 @@ const Navbar = () => {
                 <div 
                     className={`
                         fixed lg:relative top-0 left-0 h-full lg:h-auto w-[250px] lg:w-auto 
-                        bg-background lg:bg-transparent z-10 shadow-lg lg:shadow-none
+                        bg-background lg:bg-transparent z-30 shadow-lg lg:shadow-none
                         transform transition-transform duration-300 ease-in-out
                         ${openMenu ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                         pt-16 lg:pt-0
@@ -58,7 +58,7 @@ const Navbar = () => {
                 {/* Overlay with blur effect for mobile menu */}
                 {openMenu && (
                     <div 
-                        className="fixed inset-0 bg-black/20 backdrop-blur-md z-[5] lg:hidden transition-all duration-300" 
+                        className="fixed inset-0 bg-black/20 backdrop-blur-md z-20 lg:hidden transition-all duration-300" 
                         onClick={() => setOpenMenu(false)}
                     />
                 )}
