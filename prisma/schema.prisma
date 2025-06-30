@@ -14,17 +14,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
+  name          String
+  image         String?
+  phone         String?
+  streetAddress String?
+  city          String?
+  country       String?
+  postalCode    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  orders        OrderProduct[]
+  Order         Order[]
+}
+
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String
   image       String
   order       Int
   basePrice   Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   sizes       Size[]
   extras      Extra[]
+  orders      OrderProduct[]
+  category    Category?      @relation(fields: [categoryId], references: [id])
+  categoryId  String
 }
 
 model Size {
@@ -56,4 +76,43 @@ enum SizeName {
   SMALL
   MEDIUM
   LARGE
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  order    Int
+  products Product[]
+}
+
+// order details
+model Order {
+  id            String         @id @default(cuid())
+  paid          Boolean        @default(false)
+  subtotal      Float
+  total         Float
+  deliveryFee   Float
+  userEmail     String
+  phone         String
+  streetAddress String
+  city          String
+  country       String
+  postalCode    String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  products      OrderProduct[]
+  User          User?          @relation(fields: [userId], references: [id])
+  userId        String?
+}
+
+//quantity of each product in the order
+model OrderProduct {
+  id        String   @id @default(cuid())
+  quantity  Int
+  Order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  Product   Product   @relation(fields: [productId], references: [id])
+  productId Int
 }
