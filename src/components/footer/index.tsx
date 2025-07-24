@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
+import pizza from '../../../public/assets/images/pizzaIcon.png';
 import { Heart } from 'lucide-react';
+import Image from 'next/image';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -11,11 +13,14 @@ const Footer = () => {
                 {/* Simple two-column footer */}
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     {/* Logo and copyright */}
-                    <div className="mb-4 md:mb-0 text-center md:text-left">
-                        <h3 className="font-bold text-lg mb-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Tasty Food</h3>
-                        <p className="text-sm text-muted-foreground">
-                            &copy; {currentYear} All rights reserved
-                        </p>
+                    <div className="flex items-center gap-3 mb-4 md:mb-0 text-center md:text-left">
+                        <Image src={pizza} alt="Pizza Logo" className="h-10 w-10" />
+                        <div>
+                            <h3 className="font-bold text-lg mb-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">Tasty Food</h3>
+                            <p className="text-sm text-muted-foreground">
+                                &copy; {currentYear} All rights reserved
+                            </p>
+                        </div>
                     </div>
                     
                     {/* Quick Links - horizontal on desktop */}
