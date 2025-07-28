@@ -32,7 +32,7 @@ model User {
 }
 
 model Product {
-  id          Int            @id @default(autoincrement())
+  id          String         @id @default(cuid())
   name        String
   description String
   image       String
@@ -52,7 +52,7 @@ model Size {
   name      SizeName
   price     Float
   Product   Product  @relation(fields: [productId], references: [id])
-  productId Int
+  productId String // Changed from Int to String
 }
 
 model Extra {
@@ -60,7 +60,7 @@ model Extra {
   name      ExtraType
   price     Float
   Product   Product   @relation(fields: [productId], references: [id])
-  productId Int
+  productId String // Changed from Int to String
 }
 
 enum ExtraType {
@@ -107,12 +107,12 @@ model Order {
 
 //quantity of each product in the order
 model OrderProduct {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   quantity  Int
-  Order     Order    @relation(fields: [orderId], references: [id])
+  Order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
-  User      User?    @relation(fields: [userId], references: [id])
+  User      User?   @relation(fields: [userId], references: [id])
   userId    String?
-  Product   Product   @relation(fields: [productId], references: [id])
-  productId Int
+  Product   Product @relation(fields: [productId], references: [id])
+  productId String // Changed from Int to String
 }

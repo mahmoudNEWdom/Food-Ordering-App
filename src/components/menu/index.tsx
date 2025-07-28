@@ -4,7 +4,7 @@ import { ProductWithRelations } from '@/Types/product';
 
 const Menu = ({ items }: { items: ProductWithRelations[] }) => {
     return items.length > 0 ? (
-         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {items.map((item: ProductWithRelations) => (
                    <Menuitem key={item.id} item={item} />
                 ))}

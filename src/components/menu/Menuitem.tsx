@@ -1,6 +1,7 @@
+"use client";
 import { formatCurrency } from '@/lib/formatters';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -16,41 +17,20 @@ import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Checkbox } from '../ui/checkbox';
 import { ProductWithRelations } from '@/Types/product';
-
-// const Sizes = [{
-//     id : crypto.randomUUID(),
-//     name : "small",
-//     price : 10.99,
-// },
-// {
-//     id : crypto.randomUUID(),
-//     name : "medium",
-//     price : 12.99,
-// }, {
-//     id : crypto.randomUUID(),
-//     name : "large",
-//     price : 14.99,
-// }]
-
-// const Extras = [{
-//     id : crypto.randomUUID(),
-//     name : "Extra Cheese",
-//     price : 1.99,
-// }, {
-//     id : crypto.randomUUID(),
-//     name : "Extra Sauce",
-//     price : 0.99,
-// }, {
-//     id : crypto.randomUUID(),
-//     name : "Extra Toppings",
-//     price : 2.49,
-// }]
+import { Extra, Size, SizeName } from '@/generated/prisma';
+import { useAppSelector } from '@/redux/hooks';
+import { selectCartItems } from '@/redux/features/cart/cartSlice';
 
 const Menuitem = ({ item }: { item: ProductWithRelations }) => {
+    const cart = useAppSelector(selectCartItems)
+    const defaultSize = cart.find((e) => e.id === item.id)?.size ||
+    item.sizes.find((size) => size.name === SizeName.SMALL);
+    const [selectedSize, setSelectedSize] = useState<Size>(defaultSize!);
+    const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
     return (
         <div className="rounded-md shadow-2xl hover:transform hover:scale-103 transition-transform duration-300 ease-in-out">
             <div className="p-4">
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-6">
                     <Image
                         src={item.image}
                         width={180}
@@ -80,31 +60,20 @@ const Menuitem = ({ item }: { item: ProductWithRelations }) => {
                         <div className='space-y-6 py-4'>
                             <div>
                                 <Label htmlFor="size" className='text-center font-medium block mb-3'>Pick your Size</Label>
-                                <RadioGroup defaultValue="small" className="space-y-3">
-                                    {item.sizes.map((size) => (
-                                        <div className="flex items-center justify-between rounded-md hover:bg-muted/50 transition-colors" key={size.id}>
-                                            <div className="flex items-center gap-3">
-                                                <RadioGroupItem value={size.name} id={size.id} />
-                                                <Label htmlFor={size.id} className="capitalize font-medium">{size.name}</Label>
-                                            </div>
-                                            <span className="font-bold text-primary">{formatCurrency(size.price + item.basePrice)}</span>
-                                        </div>
-                                    ))}
-                                </RadioGroup>
+                                <PickSize
+                                    sizes={item.sizes}
+                                    item={item}
+                                    selectedSize={selectedSize}
+                                    setSelectedSize={setSelectedSize}
+                                />
                             </div>
                             <div>
                                 <Label htmlFor="extras" className='text-center font-medium block mb-3'>Any Extras ?</Label>
-                                <div className="space-y-3">
-                                    {item.extras.map((extra) => (
-                                        <div className="flex items-center justify-between p-2 rounded-md hover:bg-muted/50 transition-colors" key={extra.id}>
-                                            <div className="flex items-center gap-3">
-                                                <Checkbox id={extra.id} />
-                                                <Label htmlFor={extra.id} className="capitalize font-medium">{extra.name}</Label>
-                                            </div>
-                                            <span className="font-bold text-primary">{formatCurrency(extra.price)}</span>
-                                        </div>
-                                    ))}
-                                </div>
+                                <Extras
+                                    extras={item.extras}
+                                    selectedExtras={selectedExtras}
+                                    setSelectedExtras={setSelectedExtras}
+                                />
                             </div>
                         </div>
                             <DialogFooter >
@@ -122,3 +91,74 @@ const Menuitem = ({ item }: { item: ProductWithRelations }) => {
 );
 }
 export default Menuitem;
+
+function PickSize({
+  sizes,
+  item,
+  selectedSize,
+  setSelectedSize,
+}: {
+  sizes: Size[];
+  selectedSize: Size;
+  item: ProductWithRelations;
+  setSelectedSize: React.Dispatch<React.SetStateAction<Size>>;
+}) {
+  return (
+    <RadioGroup defaultValue='comfortable'>
+      {sizes.map((size) => (
+        <div
+          key={size.id}
+          className='flex items-center space-x-2 border border-gray-100 rounded-md p-4'
+        >
+          <RadioGroupItem
+            value={selectedSize.name}
+            checked={selectedSize.id === size.id}
+            onClick={() => setSelectedSize(size)}
+            id={size.id}
+          />
+          <Label htmlFor={size.id}>
+            {size.name} {formatCurrency(size.price + item.basePrice)}
+          </Label>
+        </div>
+      ))}
+    </RadioGroup>
+  );
+}
+function Extras({
+  extras,
+  selectedExtras,
+  setSelectedExtras,
+}: {
+  extras: Extra[];
+  selectedExtras: Extra[];
+  setSelectedExtras: React.Dispatch<React.SetStateAction<Extra[]>>;
+}) {
+  const handleExtra = (extra: Extra) => {
+    if (selectedExtras.find((e) => e.id === extra.id)) {
+      const filteredSelectedExtras = selectedExtras.filter(
+        (item) => item.id !== extra.id
+      );
+      setSelectedExtras(filteredSelectedExtras);
+    } else {
+      setSelectedExtras((prev) => [...prev, extra]);
+    }
+  };
+  return extras.map((extra) => (
+    <div
+      key={extra.id}
+      className='flex items-center space-x-2 border border-gray-100 rounded-md p-4'
+    >
+      <Checkbox
+        id={extra.id}
+        onClick={() => handleExtra(extra)}
+        checked={Boolean(selectedExtras.find((e) => e.id === extra.id))}
+      />
+      <Label
+        htmlFor={extra.id}
+        className='text-sm text-accent font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+      >
+        {extra.name} {formatCurrency(extra.price)}
+      </Label>
+    </div>
+  ));
+}

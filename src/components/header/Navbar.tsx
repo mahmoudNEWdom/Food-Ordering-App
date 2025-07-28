@@ -4,6 +4,7 @@ import Link from '../link';
 import { Pages, Routes } from '@/constans/enums';
 import { Button, buttonVariants } from '../ui/button';
 import {Menu} from "lucide-react"
+import CartButton from './cart-Button';
 
 const Navbar = () => {
     const [openMenu, setOpenMenu] = useState(false);
@@ -62,7 +63,9 @@ const Navbar = () => {
                         onClick={() => setOpenMenu(false)}
                     />
                 )}
+            <CartButton />
             </div>
+
         </nav>
     );
 }

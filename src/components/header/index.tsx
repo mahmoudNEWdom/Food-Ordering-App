@@ -9,7 +9,7 @@ const Header = () => {
         <header>
         <div className='container flex items-center justify-between py-4 mx-auto'>
         <Link href={Routes.ROOT}><Image src={pizza} width={60} height={60} alt="Pizza" /></Link>
-        <Navbar></Navbar>
+        <Navbar/>
         </div>
         </header>
     );
