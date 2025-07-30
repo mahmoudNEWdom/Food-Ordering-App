@@ -8,8 +8,8 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="border-t border-border/30 bg-background py-6 px-4 mt-8">
-            <div className="max-w-5xl mx-auto">
+        <footer className="border-t border-border/30 bg-background py-6 px-12 mt-8">
+            <div className="max-w-7xl mx-auto">
                 {/* Simple two-column footer */}
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     {/* Logo and copyright */}

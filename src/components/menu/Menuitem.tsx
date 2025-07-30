@@ -54,13 +54,13 @@ const Menuitem = ({ item }: { item: ProductWithRelations }) => {
         <div className="rounded-md shadow-2xl hover:transform hover:scale-103 transition-transform duration-300 ease-in-out">
             <div className="p-4">
                 <div className="flex justify-center mb-6">
-                    <Image
-                        src={item.image}
-                        width={180}
-                        height={180}
-                        alt={item.name}
-                        className="rounded-md object-cover"
-                    />
+                     <Image
+            src={item.image}
+            width={220}
+            height={200}
+            alt={item.name}
+            className="rounded-md object-cover h-[200px] w-[200px]"
+          />
                 </div>
                 
                 <div className="flex justify-between px-10 items-center mb-2">
@@ -80,7 +80,7 @@ const Menuitem = ({ item }: { item: ProductWithRelations }) => {
                             <DialogTitle>{item.name}</DialogTitle>
                             <DialogDescription>{item.description}</DialogDescription>
                         </DialogHeader>
-                        <div className='space-y-6 py-4'>
+                        <div className='space-y-2 py-2'>
                             <div>
                                 <Label htmlFor="size" className='text-center font-medium block mb-3'>Pick your Size</Label>
                                 <PickSize
@@ -136,7 +136,7 @@ function PickSize({
       {sizes.map((size) => (
         <div
           key={size.id}
-          className='flex items-center space-x-2 border border-gray-100 rounded-md p-4'
+          className='flex items-center space-x-2  rounded-md p-2 hover:bg-accent/20 transition-colors duration-200'
         >
           <RadioGroupItem
             value={selectedSize.name}
@@ -174,7 +174,7 @@ function Extras({
   return extras.map((extra) => (
     <div
       key={extra.id}
-      className='flex items-center space-x-2 border border-gray-100 rounded-md p-4'
+      className='flex items-center space-x-2 rounded-md p-4 hover:bg-accent/20 transition-colors duration-200'
     >
       <Checkbox
         id={extra.id}
@@ -199,7 +199,7 @@ const ChooseQuantity = (
     selectedExtras: Extra[] }) => {
   const dispatch = useAppDispatch();
   return (
-    <div className='flex items-center flex-col gap-2 mt-4'>
+    <div className='flex items-center flex-col gap-2'>
       <div className='flex items-center justify-center gap-2'>
         <Button
           variant='outline'
