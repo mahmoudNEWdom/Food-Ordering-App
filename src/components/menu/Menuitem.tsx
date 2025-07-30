@@ -4,7 +4,6 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -18,15 +17,39 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Checkbox } from '../ui/checkbox';
 import { ProductWithRelations } from '@/Types/product';
 import { Extra, Size, SizeName } from '@/generated/prisma';
-import { useAppSelector } from '@/redux/hooks';
-import { selectCartItems } from '@/redux/features/cart/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { addCartItem, removeCartItem, removeItemFromCart, selectCartItems } from '@/redux/features/cart/cartSlice';
+import { getItemQuantity } from '@/lib/cart';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 
 const Menuitem = ({ item }: { item: ProductWithRelations }) => {
+  const dispatch = useAppDispatch();
     const cart = useAppSelector(selectCartItems)
+    const quantity =  getItemQuantity(item.id, cart);
     const defaultSize = cart.find((e) => e.id === item.id)?.size ||
     item.sizes.find((size) => size.name === SizeName.SMALL);
+    const defaultExtras = cart.find((e) => e.id === item.id)?.extras || [];
     const [selectedSize, setSelectedSize] = useState<Size>(defaultSize!);
     const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
+
+    let totalPrice = item.basePrice
+    if (selectedSize) {
+        totalPrice += selectedSize.price;
+    }
+    if (selectedExtras.length > 0) {
+        totalPrice += selectedExtras.reduce((acc, extra) => acc + extra.price, 0);
+    }
+    const handleAddToCart = () => {
+      dispatch(
+        addCartItem({
+        id: item.id,
+        name: item.name,
+        image: item.image,
+        basePrice: item.basePrice,
+        size: selectedSize,
+        extras: selectedExtras,
+      }))
+    }
     return (
         <div className="rounded-md shadow-2xl hover:transform hover:scale-103 transition-transform duration-300 ease-in-out">
             <div className="p-4">
@@ -77,9 +100,14 @@ const Menuitem = ({ item }: { item: ProductWithRelations }) => {
                             </div>
                         </div>
                             <DialogFooter >
-                                    <Button type='submit' className='w-80'  >
-                                        Add to cart
-                                    </Button>
+                                  {quantity === 0 ? (  <Button type='submit' className='w-80'
+                                    onClick={handleAddToCart}>
+                                        Add to cart {formatCurrency(totalPrice)}
+                                    </Button>)
+                                    : (
+                                      <ChooseQuantity quantity={quantity} item={item}
+                                      selectedSize={selectedSize} selectedExtras={selectedExtras}></ChooseQuantity>
+                                    )}
 
                             </DialogFooter>
                     </DialogContent>
@@ -162,3 +190,46 @@ function Extras({
     </div>
   ));
 }
+
+const ChooseQuantity = (
+  { quantity, item, selectedSize, selectedExtras }:
+  { quantity: number;
+    item: ProductWithRelations;
+    selectedSize: Size;
+    selectedExtras: Extra[] }) => {
+  const dispatch = useAppDispatch();
+  return (
+    <div className='flex items-center flex-col gap-2 mt-4'>
+      <div className='flex items-center justify-center gap-2'>
+        <Button
+          variant='outline'
+          icon={MinusIcon}
+          onClick={() => dispatch(removeCartItem({ id: item.id }))}
+        ></Button>
+        <div>
+          <span className='text-black'>{quantity} in cart</span>
+        </div>
+        <Button
+          variant='outline'
+          onClick={() => dispatch(addCartItem({
+            basePrice: item.basePrice,
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            quantity: 1,
+            size: selectedSize,
+            extras: selectedExtras,
+          }))}
+          icon={PlusIcon}>
+          
+          </Button>
+      </div>
+      <Button
+        size='sm'
+        onClick={() => dispatch(removeItemFromCart({ id: item.id }))}
+      >
+        Remove
+      </Button>
+    </div>
+  );
+};

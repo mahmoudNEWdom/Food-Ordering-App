@@ -1,11 +1,15 @@
+"use client";
 import React from 'react';
 import Link from '../link';
 import { Routes } from '@/constans/enums';
 import { ShoppingCartIcon } from 'lucide-react';
+import { getCartQuantity } from '@/lib/cart';
+import { useAppSelector } from '@/redux/hooks';
+import { selectCartItems } from '@/redux/features/cart/cartSlice';
 
 const CartButton = () => {
-    // This would typically come from a cart context/state
-    
+const cart = useAppSelector(selectCartItems);
+const CartQuantity = getCartQuantity(cart)
     return (
         <Link 
             href={`${Routes.CART}`} 
@@ -14,7 +18,7 @@ const CartButton = () => {
             <ShoppingCartIcon className="h-6 w-6 text-gray-700 transition-all duration-300 ease-out origin-center group-hover:rotate-[15deg] group-hover:text-orange-500" />
 
                 <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center min-w-[20px] h-5  shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md">
-                    2
+                    {CartQuantity}
                 </span>
 
         </Link>
